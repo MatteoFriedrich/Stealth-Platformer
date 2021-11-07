@@ -1,0 +1,129 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://Scripts/Scouter.gd" type="Script" id=1]
+[ext_resource path="res://Sprites/Creatures/Rat/RUN/sRatBig_Run_0.png" type="Texture" id=2]
+[ext_resource path="res://Sprites/Creatures/Rat/RUN/sRatBig_Run_1.png" type="Texture" id=3]
+[ext_resource path="res://Sprites/Creatures/Rat/RUN/sRatBig_Run_2.png" type="Texture" id=4]
+[ext_resource path="res://Sprites/Creatures/Rat/RUN/sRatBig_Run_3.png" type="Texture" id=5]
+[ext_resource path="res://Sprites/Creatures/Rat/RUN/sRatBig_Run_4.png" type="Texture" id=6]
+[ext_resource path="res://Sprites/Creatures/Rat/RUN/sRatBig_Run_5.png" type="Texture" id=7]
+[ext_resource path="res://Sprites/Creatures/Rat/IDLE/sRatBig_Idle_0.png" type="Texture" id=8]
+[ext_resource path="res://Sprites/Creatures/Rat/IDLE/sRatBig_Idle_1.png" type="Texture" id=9]
+[ext_resource path="res://Sprites/Creatures/Rat/IDLE/sRatBig_Idle_2.png" type="Texture" id=10]
+[ext_resource path="res://Sprites/Creatures/Rat/IDLE/sRatBig_Idle_3.png" type="Texture" id=11]
+[ext_resource path="res://Sprites/square2.png" type="Texture" id=12]
+[ext_resource path="res://Objects/PARENTS/TextureProgress.gd" type="Script" id=13]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 10, 9.82001 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "Move",
+"speed": 10.0
+}, {
+"frames": [  ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 8 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ) ],
+"loop": true,
+"name": "Idle",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=3]
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 4.03709, 4.37911 )
+
+[sub_resource type="CircleShape2D" id=5]
+radius = 296.266
+
+[node name="Scouter" type="KinematicBody2D"]
+script = ExtResource( 1 )
+player_path = NodePath("")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 2 )
+animation = "Idle"
+frame = 2
+playing = true
+
+[node name="ray_left" type="RayCast2D" parent="."]
+position = Vector2( -12.9122, 7.9808 )
+enabled = true
+cast_to = Vector2( 0, 10 )
+collision_mask = 7
+
+[node name="ray_right" type="RayCast2D" parent="."]
+position = Vector2( 12.9122, 8.33196 )
+enabled = true
+cast_to = Vector2( 0, 10 )
+collision_mask = 7
+collide_with_areas = true
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource( 3 )
+
+[node name="AttackShape" type="Area2D" parent="."]
+position = Vector2( 10, 0 )
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackShape"]
+position = Vector2( 0.184025, 0.184025 )
+shape = SubResource( 4 )
+
+[node name="LookRange" type="Area2D" parent="."]
+position = Vector2( -0.296295, -3.85187 )
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LookRange"]
+position = Vector2( 0.00577545, 4.56589 )
+rotation = 1.5708
+shape = SubResource( 5 )
+
+[node name="Position2D" type="Position2D" parent="."]
+position = Vector2( -0.296295, -4.14815 )
+rotation = 3.14159
+scale = Vector2( 1, 2 )
+
+[node name="VisionCone" type="ColorRect" parent="Position2D"]
+visible = false
+margin_left = -9.93827
+margin_top = 7.41975
+margin_right = 139.062
+margin_bottom = 22.4198
+rect_min_size = Vector2( -10000, 0 )
+rect_rotation = 180.0
+rect_scale = Vector2( 0.399999, 1 )
+color = Color( 1, 0.929412, 0, 1 )
+
+[node name="PlayerDetecter" type="RayCast2D" parent="."]
+enabled = true
+cast_to = Vector2( 0, 0 )
+collision_mask = 15
+
+[node name="TextureProgress" type="TextureProgress" parent="."]
+margin_left = -43.5557
+margin_top = -49.4816
+margin_right = -3.55567
+margin_bottom = -9.48163
+rect_scale = Vector2( 2.5, 0.5 )
+max_value = 30.0
+texture_progress = ExtResource( 12 )
+script = ExtResource( 13 )
+[connection signal="area_entered" from="HitBox" to="." method="_on_HitBox_area_entered"]
+[connection signal="body_entered" from="LookRange" to="." method="_on_LookRange_body_entered"]
+[connection signal="body_exited" from="LookRange" to="." method="_on_LookRange_body_exited"]

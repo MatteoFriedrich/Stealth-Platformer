@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scripts/DialogBox.gd" type="Script" id=1]
+
+[node name="DialogBox" type="Polygon2D"]
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+margin_right = 384.0
+margin_bottom = 128.0
+text = "Hello World!"
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

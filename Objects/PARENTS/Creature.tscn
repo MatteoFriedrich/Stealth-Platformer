@@ -1,0 +1,126 @@
+[gd_scene load_steps=17 format=2]
+
+[ext_resource path="res://Scripts/PARENTS/Creature.gd" type="Script" id=1]
+[ext_resource path="res://Sprites/8svtGs/sprite_06.png" type="Texture" id=2]
+[ext_resource path="res://Sprites/8svtGs/sprite_11.png" type="Texture" id=3]
+[ext_resource path="res://Sprites/8svtGs/sprite_09.png" type="Texture" id=4]
+[ext_resource path="res://Sprites/8svtGs/sprite_10.png" type="Texture" id=5]
+[ext_resource path="res://Sprites/8svtGs/sprite_05.png" type="Texture" id=6]
+[ext_resource path="res://Sprites/8svtGs/sprite_07.png" type="Texture" id=7]
+[ext_resource path="res://Sprites/square2.png" type="Texture" id=8]
+[ext_resource path="res://Objects/PARENTS/TextureProgress.gd" type="Script" id=9]
+[ext_resource path="res://Sprites/8svtGs/sprite_04.png" type="Texture" id=10]
+[ext_resource path="res://Sprites/8svtGs/sprite_08.png" type="Texture" id=11]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 11.4021, 14.9461 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 10 ), ExtResource( 6 ), ExtResource( 2 ), ExtResource( 7 ), ExtResource( 11 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "Move",
+"speed": 10.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=3]
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 4.03709, 4.37911 )
+
+[sub_resource type="CapsuleShape2D" id=5]
+height = 116.521
+
+[node name="Creature" type="KinematicBody2D"]
+script = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0.120209, 1.16201 )
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 2 )
+animation = "Move"
+frame = 6
+playing = true
+flip_h = true
+
+[node name="ray_left" type="RayCast2D" parent="."]
+position = Vector2( -12.9122, 7.9808 )
+enabled = true
+cast_to = Vector2( 0, 10 )
+collision_mask = 7
+
+[node name="ray_right" type="RayCast2D" parent="."]
+position = Vector2( 12.9122, 8.33196 )
+enabled = true
+cast_to = Vector2( 0, 10 )
+collision_mask = 7
+collide_with_areas = true
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource( 3 )
+
+[node name="AttackShape" type="Area2D" parent="."]
+position = Vector2( 10, 0 )
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackShape"]
+position = Vector2( 0.184025, 0.184025 )
+shape = SubResource( 4 )
+
+[node name="LookRange" type="Area2D" parent="."]
+position = Vector2( -0.296295, -3.85187 )
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LookRange"]
+rotation = 1.5708
+scale = Vector2( 1.8, 1 )
+shape = SubResource( 5 )
+
+[node name="Position2D" type="Position2D" parent="."]
+position = Vector2( -0.296295, -4.14815 )
+rotation = 3.14159
+scale = Vector2( 1, 2 )
+
+[node name="VisionCone" type="ColorRect" parent="Position2D"]
+margin_left = -14.1588
+margin_top = 7.14665
+margin_right = 134.841
+margin_bottom = 22.1467
+rect_min_size = Vector2( -10000, 0 )
+rect_rotation = 180.0
+rect_scale = Vector2( 0.399999, 1 )
+color = Color( 1, 0.929412, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayerDetecter" type="RayCast2D" parent="."]
+enabled = true
+cast_to = Vector2( 0, 0 )
+collision_mask = 7
+
+[node name="TextureProgress" type="TextureProgress" parent="."]
+visible = false
+margin_left = -43.5557
+margin_top = -49.4816
+margin_right = -3.55567
+margin_bottom = -9.48163
+rect_scale = Vector2( 2.5, 0.5 )
+max_value = 30.0
+texture_progress = ExtResource( 8 )
+script = ExtResource( 9 )
+[connection signal="area_entered" from="HitBox" to="." method="_on_HitBox_area_entered"]
+[connection signal="body_entered" from="LookRange" to="." method="_on_LookRange_body_entered"]
+[connection signal="body_exited" from="LookRange" to="." method="_on_LookRange_body_exited"]
